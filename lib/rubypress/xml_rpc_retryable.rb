@@ -3,10 +3,11 @@ module Rubypress
     include Retryable
 
     RETRY_EXCEPTIONS = [
-      Timeout::Error,
-      Net::ReadTimeout
+      Timeout::Error
     ]
 
+    RETRY_EXCEPTIONS << Net::ReadTimeout if Net.const_defined?(:ReadTimeout)
+    
     def self.extended(instance)
       instance.singleton_class.send(:alias_method, :call_without_retry, :call)
       instance.singleton_class.send(:alias_method, :call, :call_with_retry)
